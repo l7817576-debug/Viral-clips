@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipViral - Free AI Video Clipper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff6b35;
+            --secondary: #f7931e;
+            --accent: #fdb833;
+            --dark-bg: #0d1117;
+            --card-bg: #161b22;
+            --border: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --success: #3fb950;
+            --warning: #d29922;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #0a0e14 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .nav-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: -0.3rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 60px 2rem 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: slideInDown 0.8s ease;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Input Section */
+        .input-section {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(247, 147, 30, 0.05) 100%);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 700px;
+            margin: 2rem auto;
+            box-shadow: 0 8px 32px rgba(255, 107, 53, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-section:hover {
+            border-color: var(--primary);
+            box-shadow: 0 12px 48px rgba(255, 107, 53, 0.15);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(22, 27, 34, 1);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .btn-generate {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-generate:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-generate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .input-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.8rem;
+            text-align: left;
+        }
+
+        /* Processing State */
+        .processing-container {
+            display: none;
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .processing-container.active {
+            display: block;
+            animation: slideInUp 0.5s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-dots {
+            display: inline-block;
+            margin-left: 0.3rem;
+        }
+
+        .status-dots span {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: blink 1.4s ease-in-out infinite;
+        }
+
+        .status-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .status-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
+        /* Results Section */
+        .results-container {
+            display: none;
+            margin: 3rem auto;
+            max-width: 1200px;
+        }
+
+        .results-container.active {
+            display: block;
+            animation: slideInUp 0.5s ease;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .results-header p {
+            color: var(--text-secondary);
+        }
+
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .clip-card {
+            background: linear-gradient(135deg, rgba(22, 27, 34, 0.8) 0%, rgba(22, 27, 34, 0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: popIn 0.5s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .clip-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(255, 107, 53, 0.15);
+        }
+
+        .clip-preview {
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2) 0%, rgba(247, 147, 30, 0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clip-preview::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(13, 17, 23, 0.8) 100%);
+        }
+
+        .clip-info {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .clip-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .clip-score {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .clip-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .clip-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .clip-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 0.6rem;
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: rgba(255, 107, 53, 0.3);
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 60px 2rem;
+            background: linear-gradient(180deg, transparent 0%, rgba(255, 107, 53, 0.05) 100%);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .feature {
+            background: rgba(22, 27, 34, 0.5);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            border-color: var(--primary);
+            background: rgba(22, 27, 34, 0.8);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .feature p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(13, 17, 23, 0.8);
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero {
+                padding: 30px 1rem 20px;
+                margin-top: 70px;
+            }
+
+            .input-section {
+                padding: 1.5rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            input[type="text"] {
+                min-width: 100%;
+            }
+
+            .clips-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .footer-links {
+                gap: 1rem;
+                flex-direction: column;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid var(--border);
+            animation: slideInUp 0.3s ease;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-modal-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-modal-secondary {
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <span class="logo-icon">🎬</span>
+            <div>
+                ClipViral
+                <div class="nav-subtitle">FREE AI Clipper</div>
+            </div>
+        </div>
+        <div class="nav-right">
+            <span class="badge">⚡ 100% Free</span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Turn Videos Into Viral Clips</h1>
+            <p class="subtitle">Paste any video link and our AI instantly extracts the best moments. Perfect for TikTok, Instagram, YouTube Shorts, and more.</p>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="videoUrl" 
+                        placeholder="Paste YouTube, Vimeo, or video URL here..." 
+                        onkeypress="handleKeyPress(event)"
+                    />
+                    <button class="btn-generate" onclick="generateClips()">Generate Clips</button>
+                </div>
+                <div class="input-hint">
+                    💡 Supports: YouTube, Vimeo, TikTok, Instagram, and direct video URLs
+                </div>
+            </div>
+
+            <!-- Processing State -->
+            <div class="processing-container" id="processingContainer">
+                <div class="spinner"></div>
+                <p class="status-message">
+                    Analyzing your video<span class="status-dots"><span></span><span></span><span></span></span>
+                </p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+                    This usually takes 30-60 seconds
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-container" id="resultsContainer">
+        <div class="results-header">
+            <h2>🎯 Your Viral Clips Are Ready!</h2>
+            <p>These are the best moments from your video, optimized for social media</p>
+        </div>
+        <div class="clips-grid" id="clipsGrid"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2>Why ClipViral?</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Lightning Fast</h3>
+                <p>Get viral clips in seconds, not hours. AI-powered processing at superhuman speed.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Smart Detection</h3>
+                <p>AI finds the most engaging moments based on pacing, emotions, and viewer retention.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h3>Social Ready</h3>
+                <p>Pre-formatted for TikTok, Reels, Shorts. Captions, music, and effects included.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💯</div>
+                <h3>100% Free</h3>
+                <p>No hidden costs, no watermarks, no limits. Forever free for everyone.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔄</div>
+                <h3>Unlimited Uploads</h3>
+                <p>Process as many videos as you want. Create as many clips as you need.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📥</div>
+                <h3>Easy Download</h3>
+                <p>Download your clips in HD. Ready to post directly to any social platform.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>🎬 ClipViral - Free AI Video Clipper</p>
+        <p style="font-size: 0.9rem;">Turn any video into viral clips. No sign-up required. No watermarks. Forever free.</p>
+        <div class="footer-links">
+            <a href="#" onclick="showModal('about')">About</a>
+            <a href="#" onclick="showModal('privacy')">Privacy</a>
+            <a href="#" onclick="showModal('contact')">Contact</a>
+            <a href="#" onclick="alert('GitHub: github.com/clipviral')">GitHub</a>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                About ClipViral
+                <button class="modal-close" onclick="closeModal('about')">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                    ClipViral is a free, open-source AI video clipper that helps creators extract the best moments from their videos automatically.
+                </p>
+                <p style="color: var(--text-secondary);">
+                    Built with ❤️ for creators who want to save time and get more engagement. No paywalls. No limits. Just pure value.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="privacyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                Privacy Policy
+                <button class="modal-close" onclick="closeModal('privacy')">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    <strong>Your privacy matters.</strong> ClipViral does NOT:
+                </p>
+                <ul style="margin-left: 1.5rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                    <li>Store your videos permanently</li>
+                    <li>Track your personal data</li>
+                    <li>Sell your information</li>
+                    <li>Require account creation</li>
+                </ul>
+                <p style="color: var(--text-secondary);">
+                    Videos are processed and deleted within 24 hours. Your clips remain yours.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                Get in Touch
+                <button class="modal-close" onclick="closeModal('contact')">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    Have feedback or found a bug? We'd love to hear from you!
+                </p>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    📧 <strong>Email:</strong> hello@clipviral.com
+                </p>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    🐦 <strong>Twitter:</strong> @clipviral
+                </p>
+                <p style="color: var(--text-secondary);">
+                    💬 <strong>Discord:</strong> Join our community for updates and support
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for demo
+        const sampleClips = [
+            {
+                title: "Epic Moment #1",
+                description: "High energy moment that hooks viewers immediately",
+                duration: "0:12 - 0:28",
+                score: "98%",
+                emoji: "🔥"
+            },
+            {
+                title: "Emotional Peak",
+                description: "Powerful moment with great retention potential",
+                duration: "1:45 - 2:03",
+                score: "94%",
+                emoji: "💯"
+            },
+            {
+                title: "Laugh Out Loud",
+                description: "Funny bit perfect for viral engagement",
+                duration: "3:22 - 3:38",
+                score: "89%",
+                emoji: "😂"
+            },
+            {
+                title: "Plot Twist",
+                description: "Unexpected turn that makes people rewatch",
+                duration: "5:10 - 5:27",
+                score: "92%",
+                emoji: "😲"
+            },
+            {
+                title: "Knowledge Bomb",
+                description: "Informative moment with high shareability",
+                duration: "6:44 - 7:15",
+                score: "87%",
+                emoji: "💡"
+            },
+            {
+                title: "Call to Action",
+                description: "Perfect closing moment for engagement",
+                duration: "8:30 - 8:52",
+                score: "85%",
+                emoji: "🚀"
+            }
+        ];
+
+        function generateClips() {
+            const videoUrl = document.getElementById('videoUrl').value.trim();
+            
+            if (!videoUrl) {
+                alert('Please paste a video URL first!');
+                return;
+            }
+
+            if (!isValidUrl(videoUrl)) {
+                alert('Please enter a valid video URL!');
+                return;
+            }
+
+            // Show processing state
+            document.getElementById('processingContainer').classList.add('active');
+            document.getElementById('resultsContainer').classList.remove('active');
+
+            // Simulate processing time (3-5 seconds)
+            const processingTime = 3000 + Math.random() * 2000;
+
+            setTimeout(() => {
+                displayClips();
+                document.getElementById('processingContainer').classList.remove('active');
+                document.getElementById('resultsContainer').classList.add('active');
+                scrollToResults();
+            }, processingTime);
+        }
+
+        function displayClips() {
+            const clipsGrid = document.getElementById('clipsGrid');
+            clipsGrid.innerHTML = '';
+
+            sampleClips.forEach((clip, index) => {
+                const clipCard = document.createElement('div');
+                clipCard.className = 'clip-card';
+                clipCard.style.animationDelay = `${index * 100}ms`;
+                
+                clipCard.innerHTML = `
+                    <div class="clip-preview">
+                        ${clip.emoji}
+                    </div>
+                    <div class="clip-info">
+                        <div class="clip-title">
+                            ${clip.title}
+                            <span class="clip-score">${clip.score}</span>
+                        </div>
+                        <p class="clip-description">${clip.description}</p>
+                        <div class="clip-meta">
+                            <span>⏱️ ${clip.duration}</span>
+                            <span>📹 16:9</span>
+                        </div>
+                        <div class="clip-actions">
+                            <button class="btn-small" onclick="downloadClip('${clip.title}')">📥 Download</button>
+                            <button class="btn-small" onclick="shareClip('${clip.title}')">📤 Share</button>
+                        </div>
+                    </div>
+                `;
+                
+                clipsGrid.appendChild(clipCard);
+            });
+        }
+
+        function downloadClip(title) {
+            alert(`✅ Downloading: ${title}\n\nYour clip is ready for download!\n\nIn a real app, this would start the video download.`);
+        }
+
+        function shareClip(title) {
+            const platforms = ['TikTok', 'Instagram Reels', 'YouTube Shorts', 'Twitter'];
+            const platform = platforms[Math.floor(Math.random() * platforms.length)];
+            alert(`📤 Share to ${platform}\n\nYour clip has been copied!\n\nPaste it on ${platform} to go viral! 🚀`);
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function scrollToResults() {
+            const resultsContainer = document.getElementById('resultsContainer');
+            setTimeout(() => {
+                resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                generateClips();
+            }
+        }
+
+        function showModal(type) {
+            document.getElementById(type + 'Modal').classList.add('active');
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            const modals = document.querySelectorAll('.modal.active');
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Demo functionality
+        window.addEventListener('load', () => {
+            // Auto-fill a sample URL for demo
+            document.getElementById('videoUrl').placeholder = 'Paste YouTube, Vimeo, or video URL here...';
+        });
+    </script>
+</body>
+</html>
